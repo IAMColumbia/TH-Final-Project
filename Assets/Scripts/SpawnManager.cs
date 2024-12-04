@@ -4,16 +4,26 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject enemyPrefab;
-    public GameObject powerupPrefab;
-    private float _spawnRange = 9.0f;
-    public int _enemyCount;
-    public int _waveNumber = 1;
+    [SerializeField]
+    private GameObject enemyPrefab;
 
-    // Start is called before the first frame update
+    [SerializeField]
+    private GameObject powerupPrefab;
+    private float _spawnRange = 9.0f;
+    private int _enemyCount;
+
+    [SerializeField]
+    private int _waveNumber = 1;
+
+    [SerializeField]
+    private int _enemiesToSpawn = 1; // Start with 1 enemy in the first wave
+
+    private WaveManager waveManager;
+
     void Start()
     {
-        SpawnEnemyWave(_waveNumber);
+        waveManager = GameObject.FindObjectOfType<WaveManager>();
+        SpawnEnemyWave(_enemiesToSpawn);
         Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
     }
 
@@ -22,9 +32,20 @@ public class SpawnManager : MonoBehaviour
         _enemyCount = FindObjectsOfType<Enemy>().Length;
         if (_enemyCount == 0)
         {
-            _waveNumber++;
-            SpawnEnemyWave(_waveNumber);
-            Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
+            Debug.Log("All enemies defeated in wave: " + _waveNumber);
+            if (waveManager.GetEnemiesDefeated() >= _enemiesToSpawn)
+            {
+                Debug.Log("Wave " + _waveNumber + " completed.");
+                waveManager.WaveCompleted(); // Notify WaveManager of wave completion
+                _waveNumber++;
+                if (_waveNumber <= waveManager.totalWaves) // Check if we should continue spawning
+                {
+                    _enemiesToSpawn++; // Increase the number of enemies by 1 for the next wave
+                    SpawnEnemyWave(_enemiesToSpawn);
+                    Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
+                    Debug.Log("Wave " + _waveNumber + " started with " + _enemiesToSpawn + " enemies."); // Debug log to track spawning
+                }
+            }
         }
     }
 
@@ -34,13 +55,13 @@ public class SpawnManager : MonoBehaviour
         {
             Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation);
         }
+        Debug.Log("Spawned " + enemiesToSpawn + " enemies for wave " + _waveNumber); // Debug log to track spawning
     }
 
     private Vector3 GenerateSpawnPosition()
     {
         float spawnPosX = Random.Range(-_spawnRange, _spawnRange);
         float spawnPosZ = Random.Range(-_spawnRange, _spawnRange);
-        Vector3 randomPos = new Vector3(spawnPosX, 0, spawnPosZ);
-        return randomPos;
+        return new Vector3(spawnPosX, 0, spawnPosZ);
     }
 }
