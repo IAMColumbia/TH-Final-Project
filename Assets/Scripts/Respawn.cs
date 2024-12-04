@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Respawn : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float theshold;
+
+    public Vector3 spawnPoint;
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (transform.position.y < theshold)
+        {
+            transform.position = spawnPoint;
+            GameManager.lives -= 1;
+        }
     }
 }
