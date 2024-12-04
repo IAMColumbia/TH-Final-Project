@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject gameOver, heart1, heart2, heart3;
+    public GameObject gameOver, heart1, heart2, heart3, restartButton;
     public static int lives;
 
     private GameObject player; // Reference to the player GameObject
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
         heart2.gameObject.SetActive(true);
         heart3.gameObject.SetActive(true);
         gameOver.gameObject.SetActive(false);
+        restartButton.SetActive(false); // Hide restart button initially
 
         player = GameObject.FindGameObjectWithTag("Player"); // Make sure the player GameObject has the tag "Player"
     }
@@ -53,6 +55,7 @@ public class GameManager : MonoBehaviour
                 heart2.gameObject.SetActive(false);
                 heart3.gameObject.SetActive(false);
                 gameOver.gameObject.SetActive(true);
+                restartButton.SetActive(true); // Show restart button
                 Time.timeScale = 0; // Stop the game
                 break;
         }
