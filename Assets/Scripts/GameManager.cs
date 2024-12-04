@@ -5,20 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject gameOver, heart1, heart2, heart3, restartButton;
+    [SerializeField]
+    private GameObject _gameOver, _heart1, _heart2, _heart3, _restartButton;
+
     public static int lives;
 
-    private GameObject player; // Reference to the player GameObject
+    private GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
         lives = 3;
-        heart1.gameObject.SetActive(true);
-        heart2.gameObject.SetActive(true);
-        heart3.gameObject.SetActive(true);
-        gameOver.gameObject.SetActive(false);
-        restartButton.SetActive(false); // Hide restart button initially
+        _heart1.gameObject.SetActive(true);
+        _heart2.gameObject.SetActive(true);
+        _heart3.gameObject.SetActive(true);
+        _gameOver.gameObject.SetActive(false);
+        _restartButton.SetActive(false); // Hide restart button initially
 
         player = GameObject.FindGameObjectWithTag("Player"); // Make sure the player GameObject has the tag "Player"
     }
@@ -36,26 +38,26 @@ public class GameManager : MonoBehaviour
         switch (lives)
         {
             case 3:
-                heart1.gameObject.SetActive(true);
-                heart2.gameObject.SetActive(true);
-                heart3.gameObject.SetActive(true);
+                _heart1.gameObject.SetActive(true);
+                _heart2.gameObject.SetActive(true);
+                _heart3.gameObject.SetActive(true);
                 break;
             case 2:
-                heart1.gameObject.SetActive(true);
-                heart2.gameObject.SetActive(true);
-                heart3.gameObject.SetActive(false);
+                _heart1.gameObject.SetActive(true);
+                _heart2.gameObject.SetActive(true);
+                _heart3.gameObject.SetActive(false);
                 break;
             case 1:
-                heart1.gameObject.SetActive(true);
-                heart2.gameObject.SetActive(false);
-                heart3.gameObject.SetActive(false);
+                _heart1.gameObject.SetActive(true);
+                _heart2.gameObject.SetActive(false);
+                _heart3.gameObject.SetActive(false);
                 break;
             case 0:
-                heart1.gameObject.SetActive(false);
-                heart2.gameObject.SetActive(false);
-                heart3.gameObject.SetActive(false);
-                gameOver.gameObject.SetActive(true);
-                restartButton.SetActive(true); // Show restart button
+                _heart1.gameObject.SetActive(false);
+                _heart2.gameObject.SetActive(false);
+                _heart3.gameObject.SetActive(false);
+                _gameOver.gameObject.SetActive(true);
+                _restartButton.SetActive(true); // Show restart button
                 Time.timeScale = 0; // Stop the game
                 break;
         }
@@ -71,5 +73,12 @@ public class GameManager : MonoBehaviour
                 player.transform.position = new Vector3(0, 1, 0); // Respawn the player to a safe position
             }
         }
+    }
+
+    public void RestartLevel()
+    {
+        Time.timeScale = 1;
+        lives = 3; // Reset lives to 3
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reload the current scene
     }
 }
