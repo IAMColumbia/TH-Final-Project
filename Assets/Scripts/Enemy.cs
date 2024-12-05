@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
 
         if (_player == null)
         {
-            Debug.LogError("Player GameObject with tag 'Player' not found. Please ensure there's a GameObject tagged 'Player' in the scene.");
+            Debug.LogError("Player GameObject with tag 'Player' not found.");
         }
 
         waveManager = GameObject.FindObjectOfType<WaveManager>();
