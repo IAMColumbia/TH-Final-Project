@@ -1,5 +1,5 @@
-using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static int lives;
 
     private GameObject player;
+    private Rigidbody playerRb;
     private WaveManager waveManager;
 
     void Start()
@@ -22,6 +23,13 @@ public class GameManager : MonoBehaviour
         _winMessage.SetActive(false); // Hide win message initially
 
         player = GameObject.FindGameObjectWithTag("Player");
+        playerRb = player.GetComponent<Rigidbody>();
+
+        if (playerRb == null)
+        {
+            Debug.LogError("Rigidbody component is missing from the player.");
+        }
+
         waveManager = GameObject.FindObjectOfType<WaveManager>();
     }
 
@@ -68,6 +76,7 @@ public class GameManager : MonoBehaviour
             if (lives > 0)
             {
                 player.transform.position = new Vector3(0, 1, 0);
+                playerRb.velocity = Vector3.zero; // Reset velocity to lose momentum
             }
         }
     }
