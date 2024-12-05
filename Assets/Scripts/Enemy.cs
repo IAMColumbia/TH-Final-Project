@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
     private float speed = 3.0f;
+
     private Rigidbody _enemyRb;
     private GameObject _player;
     private WaveManager waveManager;
@@ -38,7 +40,7 @@ public class Enemy : MonoBehaviour
         if (_player != null && _enemyRb != null)
         {
             Vector3 lookDirection = (_player.transform.position - transform.position).normalized;
-            _enemyRb.AddForce(lookDirection * speed);
+            _enemyRb.AddForce(lookDirection * speed * Time.deltaTime);
         }
 
         if (transform.position.y < -10)

@@ -6,7 +6,10 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody playerRb;
     private GameObject focalPoint;
+
+    [SerializeField]
     private float _speed = 5.0f;
+
     public bool _hasPowerup;
     private float _powerupStrength = 15.0f;
     public GameObject PowerupIndicator;
@@ -22,7 +25,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         float forwardInput = Input.GetAxis("Vertical");
-        playerRb.AddForce(focalPoint.transform.forward * forwardInput * _speed);
+        playerRb.AddForce(focalPoint.transform.forward * forwardInput * _speed * Time.deltaTime);
         PowerupIndicator.transform.position = transform.position + new Vector3(0, -0.5f, 0);
     }
 
