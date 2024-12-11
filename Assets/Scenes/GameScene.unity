@@ -355,6 +355,7 @@ MonoBehaviour:
   _heart2: {fileID: 1601440382}
   _heart3: {fileID: 1229257069}
   _restartButton: {fileID: 975263787}
+  _exitButton: {fileID: 1299323505}
   _winMessage: {fileID: 1768562896}
 --- !u!4 &406440694
 Transform:

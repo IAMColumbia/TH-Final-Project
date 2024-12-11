@@ -6,16 +6,12 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject enemyPrefab;
-
     [SerializeField]
     private GameObject powerupPrefab;
+
     private float _spawnRange = 9.0f;
     private int _enemyCount;
-
-    [SerializeField]
     private int _waveNumber = 1;
-
-    [SerializeField]
     private int _enemiesToSpawn = 1; // Start with 1 enemy in the first wave
 
     private WaveManager waveManager;
@@ -23,6 +19,7 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         waveManager = GameObject.FindObjectOfType<WaveManager>();
+        AdjustDifficulty();
         SpawnEnemyWave(_enemiesToSpawn);
         Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
     }
@@ -63,5 +60,32 @@ public class SpawnManager : MonoBehaviour
         float spawnPosX = Random.Range(-_spawnRange, _spawnRange);
         float spawnPosZ = Random.Range(-_spawnRange, _spawnRange);
         return new Vector3(spawnPosX, 0, spawnPosZ);
+    }
+
+    void AdjustDifficulty()
+    {
+        // Retrieve the selected difficulty from PlayerPrefs
+        int difficulty = PlayerPrefs.GetInt("Difficulty", 0); // Default to Easy (0) if not set
+        switch (difficulty)
+        {
+            case 0:
+                // Easy settings
+                Debug.Log("Difficulty set to Easy");
+                _enemiesToSpawn = 1; // Start with fewer enemies
+                // Adjust other settings for easy mode as needed
+                break;
+            case 1:
+                // Medium settings
+                Debug.Log("Difficulty set to Medium");
+                _enemiesToSpawn = 2; // Start with a medium number of enemies
+                // Adjust other settings for medium mode as needed
+                break;
+            case 2:
+                // Hard settings
+                Debug.Log("Difficulty set to Hard");
+                _enemiesToSpawn = 3; // Start with more enemies
+                // Adjust other settings for hard mode as needed
+                break;
+        }
     }
 }
