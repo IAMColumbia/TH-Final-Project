@@ -1,18 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CollisionSound : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private AudioSource audioSource;
+
+    [SerializeField]
+    private AudioClip _collisionSound; // Assign the collision sound in the Inspector
+
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogWarning("AudioSource component not found on " + gameObject.name);
+        }
+        else
+        {
+            audioSource.playOnAwake = false; // Ensure the sound doesn't play on awake
+            audioSource.clip = _collisionSound;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnCollisionEnter(Collision collision)
     {
-        
+        if ((collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Enemy")) && audioSource != null)
+        {
+            if (!audioSource.isPlaying) // Check if the audio source is not already playing
+            {
+                audioSource.Play();
+            }
+        }
     }
 }
