@@ -4,7 +4,8 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
-    public TMP_Dropdown difficultyDropdown;
+    public TMP_Dropdown difficultyDropdown; // Reference to the difficulty dropdown
+    public AudioSource mainMusic; // Reference to the AudioSource component for music
 
     void Start()
     {
@@ -12,6 +13,12 @@ public class MainMenu : MonoBehaviour
         if (difficultyDropdown != null)
         {
             difficultyDropdown.value = 0;
+        }
+
+        // Play the background music
+        if (mainMusic != null)
+        {
+            mainMusic.Play();
         }
     }
 
@@ -30,5 +37,11 @@ public class MainMenu : MonoBehaviour
         // Exit the game
         Debug.Log("Exiting game.");
         Application.Quit();
+    }
+
+    public void ToggleDifficultyDropdown()
+    {
+        // Toggle the visibility of the dropdown (if you have a method to show/hide it)
+        difficultyDropdown.gameObject.SetActive(!difficultyDropdown.gameObject.activeSelf);
     }
 }

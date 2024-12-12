@@ -2,28 +2,29 @@ using UnityEngine;
 
 public class WaveManager : MonoBehaviour
 {
-    public int totalWaves = 4; // Total waves to win
-    private int currentWave = 0;
-    private int enemiesDefeated = 0;
+    public int totalWaves = 4; // Default total waves to win
+    private int _currentWave = 0;
+    private int _enemiesDefeated = 0;
     private GameManager gameManager;
 
     void Start()
     {
         gameManager = GameObject.FindObjectOfType<GameManager>();
+        AdjustDifficulty();
     }
 
     public void EnemyDefeated()
     {
-        enemiesDefeated++;
-        Debug.Log("Enemies Defeated: " + enemiesDefeated);
+        _enemiesDefeated++;
+        Debug.Log("Enemies Defeated: " + _enemiesDefeated);
     }
 
     public void WaveCompleted()
     {
-        currentWave++;
-        Debug.Log("Wave Completed: " + currentWave); // Add debug log to track waves
-        enemiesDefeated = 0; // Reset defeated enemy count for the new wave
-        if (currentWave >= totalWaves)
+        _currentWave++;
+        Debug.Log("Wave Completed: " + _currentWave); // Add debug log to track waves
+        _enemiesDefeated = 0; // Reset defeated enemy count for the new wave
+        if (_currentWave >= totalWaves)
         {
             gameManager.ShowWinMessage();
         }
@@ -31,12 +32,39 @@ public class WaveManager : MonoBehaviour
 
     public int GetEnemiesDefeated()
     {
-        return enemiesDefeated;
+        return _enemiesDefeated;
     }
 
     public void ResetWaves()
     {
-        currentWave = 0;
-        enemiesDefeated = 0;
+        _currentWave = 0;
+        _enemiesDefeated = 0;
+    }
+
+    void AdjustDifficulty()
+    {
+        // Retrieve the selected difficulty from PlayerPrefs
+        int difficulty = PlayerPrefs.GetInt("Difficulty", 0); // Default to Easy (0) if not set
+        switch (difficulty)
+        {
+            case 0:
+                // Easy settings
+                Debug.Log("Difficulty set to Easy");
+                totalWaves = 3; // Fewer waves for easy mode
+                // Adjust other settings as needed for easy mode
+                break;
+            case 1:
+                // Medium settings
+                Debug.Log("Difficulty set to Medium");
+                totalWaves = 4; // Default waves for medium mode
+                // Adjust other settings as needed for medium mode
+                break;
+            case 2:
+                // Hard settings
+                Debug.Log("Difficulty set to Hard");
+                totalWaves = 5; // More waves for hard mode
+                // Adjust other settings as needed for hard mode
+                break;
+        }
     }
 }

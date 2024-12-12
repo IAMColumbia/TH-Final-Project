@@ -14,14 +14,14 @@ public class PlayerController : MonoBehaviour
     private float _powerupStrength = 15.0f;
     public GameObject PowerupIndicator;
 
-    // Start is called before the first frame update
+    private Coroutine powerupCountdownCoroutine;
+
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
         focalPoint = GameObject.Find("Focal Point");
     }
 
-    // Update is called once per frame
     void Update()
     {
         float forwardInput = Input.GetAxis("Vertical");
@@ -31,12 +31,41 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Powerup"))
+        if (other.CompareTag("Powerup"))  // Make sure this matches exactly with your tag
         {
+            Debug.Log("Powerup collected");
             _hasPowerup = true;
-            Destroy(other.gameObject);
             PowerupIndicator.gameObject.SetActive(true);
-            StartCoroutine(PowerupCountdownRoutine());
+
+            // Play power-up sound using a temporary GameObject
+            AudioSource powerupAudioSource = other.GetComponent<AudioSource>();
+            if (powerupAudioSource != null)
+            {
+                Debug.Log("AudioSource found on power-up. Clip length: " + powerupAudioSource.clip.length);
+
+                GameObject tempAudio = new GameObject("TempAudio");
+                AudioSource tempAudioSource = tempAudio.AddComponent<AudioSource>();
+                tempAudioSource.clip = powerupAudioSource.clip;
+                tempAudioSource.volume = powerupAudioSource.volume; // Match the volume
+                tempAudioSource.Play();
+                Debug.Log("Playing power-up sound");
+                Destroy(tempAudio, powerupAudioSource.clip.length);
+            }
+            else
+            {
+                Debug.LogWarning("AudioSource component not found on power-up");
+            }
+
+            Destroy(other.gameObject);
+
+            // Stop the previous powerup countdown if there is one
+            if (powerupCountdownCoroutine != null)
+            {
+                StopCoroutine(powerupCountdownCoroutine);
+            }
+
+            // Start a new powerup countdown
+            powerupCountdownCoroutine = StartCoroutine(PowerupCountdownRoutine());
         }
     }
 
@@ -56,6 +85,5 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Collided with " + collision.gameObject.name + " with powerup set to " + _hasPowerup);
             enemyRigidbody.AddForce(awayFromPlayer * _powerupStrength, ForceMode.Impulse);
         }
-
     }
 }
