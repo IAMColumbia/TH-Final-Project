@@ -19,34 +19,22 @@ public class GameManager : MonoBehaviour
         switch (difficulty)
         {
             case 0:
-                // Easy settings
                 Debug.Log("Difficulty set to Easy");
-                // Adjust game settings for easy mode (e.g., more lives, slower enemies, etc.)
-                lives = 5;
-                // Example: slower enemy speed
+                lives = 3;
                 break;
             case 1:
-                // Medium settings
                 Debug.Log("Difficulty set to Medium");
-                // Adjust game settings for medium mode (e.g., default lives, normal enemy speed)
                 lives = 3;
                 break;
             case 2:
-                // Hard settings
                 Debug.Log("Difficulty set to Hard");
-                // Adjust game settings for hard mode (e.g., fewer lives, faster enemies)
                 lives = 2;
-                // Example: faster enemy speed
                 break;
         }
 
-        _heart1.gameObject.SetActive(true);
-        _heart2.gameObject.SetActive(true);
-        _heart3.gameObject.SetActive(true);
-        _gameOver.gameObject.SetActive(false);
-        _restartButton.SetActive(false);
-        _exitButton.SetActive(false);
-        _winMessage.SetActive(false);
+        Debug.Log("Initial lives set to: " + lives); // Log initial lives
+
+        UpdateLivesDisplay();
 
         player = GameObject.FindGameObjectWithTag("Player");
         playerRb = player.GetComponent<Rigidbody>();
@@ -63,8 +51,29 @@ public class GameManager : MonoBehaviour
     {
         if (player.transform.position.y < -10)
         {
+            Debug.Log("Player fell off. Current lives: " + lives);
             LoseLife();
         }
+    }
+
+    void LoseLife()
+    {
+        if (lives > 0)
+        {
+            lives--;
+            Debug.Log("Lost a life. Current lives: " + lives);
+            UpdateLivesDisplay();
+            if (lives > 0)
+            {
+                player.transform.position = new Vector3(0, 1, 0);
+                playerRb.velocity = Vector3.zero; // Reset velocity to lose momentum
+            }
+        }
+    }
+
+    public void UpdateLivesDisplay()
+    {
+        Debug.Log("Updating lives display. Current lives: " + lives); // Log when updating the display
 
         switch (lives)
         {
@@ -96,23 +105,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void LoseLife()
-    {
-        if (lives > 0)
-        {
-            lives--;
-            if (lives > 0)
-            {
-                player.transform.position = new Vector3(0, 1, 0);
-                playerRb.velocity = Vector3.zero; // Reset velocity to lose momentum
-            }
-        }
-    }
-
     public void RestartLevel()
     {
         Time.timeScale = 1;
-        // Reset lives based on difficulty
         int difficulty = PlayerPrefs.GetInt("Difficulty", 0); // Default to Easy (0) if not set
         switch (difficulty)
         {
@@ -126,6 +121,7 @@ public class GameManager : MonoBehaviour
                 lives = 2;
                 break;
         }
+        Debug.Log("Lives reset on restart. Initial lives: " + lives);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
