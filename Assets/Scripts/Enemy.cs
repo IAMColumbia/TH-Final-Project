@@ -4,21 +4,52 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
     private float speed = 3.0f;
-    private Rigidbody enemyRb;
-    private GameObject player;
 
-    // Start is called before the first frame update
+    private Rigidbody _enemyRb;
+    private GameObject _player;
+    private WaveManager waveManager;
+
     void Start()
     {
-        enemyRb = GetComponent<Rigidbody>();
-        player = GameObject.Find("Player");
+        _enemyRb = GetComponent<Rigidbody>();
+
+        if (_enemyRb == null)
+        {
+            Debug.LogError("Rigidbody component is missing from the enemy.");
+        }
+
+        _player = GameObject.FindWithTag("Player");
+
+        if (_player == null)
+        {
+            Debug.LogError("Player GameObject with tag 'Player' not found.");
+        }
+
+        waveManager = GameObject.FindObjectOfType<WaveManager>();
+
+        if (waveManager == null)
+        {
+            Debug.LogError("WaveManager not found in the scene.");
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Vector3 lookDirection = (player.transform.position - transform.position).normalized;
-        enemyRb.AddForce(lookDirection * speed);
+        if (_player != null && _enemyRb != null)
+        {
+            Vector3 lookDirection = (_player.transform.position - transform.position).normalized;
+            _enemyRb.AddForce(lookDirection * speed * Time.deltaTime);
+        }
+
+        if (transform.position.y < -10)
+        {
+            if (waveManager != null)
+            {
+                waveManager.EnemyDefeated();
+            }
+            Destroy(gameObject);
+        }
     }
 }
