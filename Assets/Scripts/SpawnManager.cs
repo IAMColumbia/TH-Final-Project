@@ -6,6 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject enemyPrefab;
+
     [SerializeField]
     private GameObject powerupPrefab;
 
